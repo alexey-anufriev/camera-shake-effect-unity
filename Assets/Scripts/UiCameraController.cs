@@ -1,16 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
-public class UiCameraController : MonoBehaviour {
+namespace Assets.Scripts
+{
+    public class UiCameraController : MonoBehaviour
+    {
+        public Transform Player;
+        public Transform HealthText;
+        public RectTransform HealthBar;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+        private PlayerController _playerController;
+        private Text _healthText;
+
+        private void Awake()
+        {
+            _playerController = Player.GetComponent<PlayerController>();
+            _healthText = HealthText.GetComponent<Text>();
+        }
+    
+        private void OnEnable()
+        {
+            _playerController.Damage += RegisterPlayerDamage;
+        }
+    
+        private void OnDisable()
+        {
+            _playerController.Damage -= RegisterPlayerDamage;
+        }
+
+        private void RegisterPlayerDamage(int currentHealth)
+        {
+            _healthText.text = "Health: " + currentHealth;
+        
+            // x2 to align bar witdth, 40 - const height
+            HealthBar.sizeDelta = new Vector2(currentHealth * 2, 40);
+        }
+    }
 }
